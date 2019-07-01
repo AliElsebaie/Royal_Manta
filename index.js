@@ -8,7 +8,29 @@ const pool = new Pool({
     connectionString: connectionString,
   })
 
-app.get('/', function (req, res, next) {    // getting all agencies 
+
+app.get('/createAgency', function (req, res, next) {    // creating agencies 
+
+    pool.connect(function(err,client,done) {
+       if(err){
+           console.log("not able to get connection "+ err);
+           res.status(400).send(err);
+       } 
+      
+       var data = ['mlahaaa']
+       pool.query("insert into agency (name) values ($1)", data
+       , function(err,result) {
+           done();    // closing the connection;
+           if(err){
+               console.log(err);
+               res.status(400).send(err);
+           }
+           res.status(200).send(result);
+       });
+    });
+});
+
+app.get('/getAllAgencies', function (req, res, next) {    // getting all agencies 
     
     //var pool = new pg.Pool()
     pool.connect(function(err,client,done) {
@@ -26,6 +48,27 @@ app.get('/', function (req, res, next) {    // getting all agencies
                console.log(err);
                res.status(400).send(err);
            }
+           res.status(200).send(result);
+       });
+    });
+});
+
+app.get('/deleteAgency', function (req, res, next) {    // deleting agencies 
+
+    pool.connect(function(err,client,done) {
+       if(err){
+           console.log("not able to get connection "+ err);
+           res.status(400).send(err);
+       } 
+       
+       pool.query("delete from agency where name = 'Booom'" 
+       , function(err,result) {
+           done();    // closing the connection;
+           if(err){
+               console.log(err);
+               res.status(400).send(err);
+           }
+           console.log('deleted Successfully')
            res.status(200).send(result);
        });
     });
