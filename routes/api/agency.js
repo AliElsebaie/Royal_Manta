@@ -72,6 +72,25 @@ router.get('/getAllAgencies', function (req, res, next) {    // getting all agee
        });
     });
 });
+router.get('/getAllEmployees', function (req, res, next) {    // getting all Employees 
+    
+    pool.connect(function(err,client,done) {
+        console.log("Connected to Server")
+       if(err){
+           console.log("not able to get connection "+ err);
+           res.status(400).send(err);
+       } 
+       
+       pool.query('SELECT * FROM agency.employee ORDER BY employee.employee_id ASC', function(err,result) {
+           done();    // closing the connection;
+           if(err){
+               console.log(err);
+               res.status(400).send(err);
+           }
+           res.status(200).send(result);
+       });
+    });
+});
 router.delete('/deleteAgency/:name', function (req, res, next) {    // deleting agency 
 
     pool.connect(function(err,client,done) {
