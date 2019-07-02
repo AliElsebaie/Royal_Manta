@@ -12,10 +12,8 @@ app.get('/', function (req, res, next) {    // getting all agencies
     
     //var pool = new pg.Pool()
     pool.connect(function(err,client,done) {
-        console.log("mafeesh")
+        console.log("Connect to pg")
        if(err){
-        console.log("tele3 fee")
-
            console.log("not able to get connection "+ err);
            res.status(400).send(err);
        } 
