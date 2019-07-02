@@ -134,6 +134,23 @@ router.put('/updateAgency/:id', function (req, res, next) {    // updating agenc
 });
 
 
-
+router.put('/assignAgencyToEmployee/:id', function (req, res, next) {    // assigning employee to an agency
+    
+    pool.connect(function(err,client,done) {
+       if(err){
+           console.log("not able to get connection "+ err);
+           res.status(400).send(err);
+       } 
+       pool.query("update agency.employee set agency_id = ($1) where employee_id = ($2)" ,([req.body.agency_id,req.params.id])
+       , function(err,result) {
+           done();    // closing the connection;
+           if(err){ 
+               console.log(err);
+               res.status(400).send(err);
+           }
+           res.status(200).send(result);
+       });
+    });
+});
 
 module.exports = router;
