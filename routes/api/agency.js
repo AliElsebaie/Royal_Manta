@@ -14,7 +14,7 @@ const pool = new Pool({
            res.status(400).send(err);
        } 
       
-        pool.query("insert into agency (name) values ($1)", [req.params.name]
+        pool.query("insert into agency.agency(agency_name) values ($1)", [req.params.name]
         , function(err,result) {
             done();    // closing the connection;
             if(err){
@@ -55,7 +55,7 @@ app.delete('/deleteAgency/:name', function (req, res, next) {    // deleting age
            res.status(400).send(err);
        } 
       
-       pool.query("delete from agency where name = ($1)" ,[req.params.name]
+       pool.query("delete from agency.agency where agency_name = ($1)" ,[req.params.name]
        , function(err,result) {
            done();    // closing the connection;
            if(err){
@@ -77,7 +77,7 @@ app.put('/updateAgency/:name', function (req, res, next) {    // updating agency
        } 
        console.log(req.body);
        
-       pool.query("update agency set name = ($1) where name = ($2)" ,([req.body,req.params.name])
+       pool.query("update agency.agency set agency_name = ($1) where agency_name = ($2)" ,([req.body,req.params.name])
        , function(err,result) {
            done();    // closing the connection;
            if(err){
