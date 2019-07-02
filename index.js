@@ -9,7 +9,7 @@ const pool = new Pool({
   })
 
 
-app.get('/createAgency', function (req, res, next) {    // creating agencies 
+app.post('/createAgency/:name', function (req, res, next) {    // creating agencies 
 
     pool.connect(function(err,client,done) {
        if(err){
@@ -17,16 +17,17 @@ app.get('/createAgency', function (req, res, next) {    // creating agencies
            res.status(400).send(err);
        } 
       
-       var data = ['mlahaaa']
-       pool.query("insert into agency (name) values ($1)", data
-       , function(err,result) {
-           done();    // closing the connection;
-           if(err){
-               console.log(err);
-               res.status(400).send(err);
-           }
-           res.status(200).send(result);
-       });
+        pool.query("insert into agency (name) values ($1)", [req.params.name]
+        , function(err,result) {
+            done();    // closing the connection;
+            if(err){
+                console.log(err);
+                res.status(400).send(err);
+            }
+            res.status(200).send(result);
+        });
+    
+ 
     });
 });
 
@@ -53,15 +54,36 @@ app.get('/getAllAgencies', function (req, res, next) {    // getting all agencie
     });
 });
 
-app.get('/deleteAgency', function (req, res, next) {    // deleting agencies 
+app.delete('/deleteAgency/:name', function (req, res, next) {    // deleting agencies 
 
     pool.connect(function(err,client,done) {
        if(err){
            console.log("not able to get connection "+ err);
            res.status(400).send(err);
        } 
-       
-       pool.query("delete from agency where name = 'Booom'" 
+      
+       pool.query("delete from agency where name = ($1)" ,[req.params.name]
+       , function(err,result) {
+           done();    // closing the connection;
+           if(err){
+               console.log(err);
+               res.status(400).send(err);
+           }
+           console.log('deleted Successfully')
+           res.status(200).send(result);
+       });
+    });
+});
+
+app.update('/updateAgency/:name', function (req, res, next) {    // deleting agencies 
+
+    pool.connect(function(err,client,done) {
+       if(err){
+           console.log("not able to get connection "+ err);
+           res.status(400).send(err);
+       } 
+      
+       pool.query("delete from agency where name = ($1)" ,[req.params.name]
        , function(err,result) {
            done();    // closing the connection;
            if(err){
