@@ -3,13 +3,12 @@ var pg = require('pg')
 var app = express();
 var router = express.Router();
 const bodyParser = require('body-parser');
-var database = require('./config/db');
 const agency = require('./routes/api/agency')
+const user = require('./routes/api/user')
 app.use('/agency',agency)
-
+app.use('/user',user)
 app.use(express.json())
 
-var conString = database.conString;
 
 
 

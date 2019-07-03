@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const {Pool} = require("pg");
 const bodyParser = require('body-parser');
+const checkAuth = require('../../middleware/check-auth'); 
 
-var database = require('../../config/db');
+const conn = require('../../config/keys').pg
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({//to solve the problem of null value problem where the req.body can read normally the input
   extended: true
@@ -12,7 +13,7 @@ var connectionString = "postgres://postgres:123456@localhost:5432/Royal";
 const pool = new Pool({
     connectionString: connectionString,
   })
-  router.post('/createAgency/:name', function (req, res, next) {    // creating agency
+  router.post('/createAgency/:name',checkAuth ,function (req, res, next) {    // creating agency
 
     pool.connect(function(err,client,done) {
        if(err){
@@ -53,7 +54,7 @@ router.get('/getAllAgenciesWithEmployees', function (req, res, next) {    // get
     });
 });
 
-router.get('/getAllAgencies', function (req, res, next) {    // getting all ageencies 
+router.get('/getAllAgencies',checkAuth,function (req, res, next) {    // getting all ageencies 
     
     pool.connect(function(err,client,done) {
         console.log("Connected to Server")
@@ -91,7 +92,7 @@ router.get('/getAllEmployees', function (req, res, next) {    // getting all Emp
        });
     });
 });
-router.delete('/deleteAgency/:name', function (req, res, next) {    // deleting agency 
+router.delete('/deleteAgency/:name',checkAuth, function (req, res, next) {    // deleting agency 
 
     pool.connect(function(err,client,done) {
        if(err){
@@ -112,7 +113,7 @@ router.delete('/deleteAgency/:name', function (req, res, next) {    // deleting 
     });
 });
 
-router.put('/updateAgency/:id', function (req, res, next) {    // updating agency
+router.put('/updateAgency/:id',checkAuth, function (req, res, next) {    // updating agency
 
     pool.connect(function(err,client,done) {
        if(err){
@@ -134,7 +135,7 @@ router.put('/updateAgency/:id', function (req, res, next) {    // updating agenc
 });
 
 
-router.put('/assignAgencyToEmployee/:id', function (req, res, next) {    // assigning employee to an agency
+router.put('/assignAgencyToEmployee/:id',checkAuth, function (req, res, next) {    // assigning employee to an agency
     
     pool.connect(function(err,client,done) {
        if(err){
