@@ -32,7 +32,6 @@ const pool = new Pool({
                      email: req.body.email
                  },tokenKey, { expiresIn: '1h' })
              console.log(result.rowCount) 
-             console.log(result)
              res.status(200).json({
                  message: 'Authentication Successful',
                  token: token
