@@ -21,7 +21,7 @@ const pool = new Pool({
        } 
       
         pool.query("insert into agency (agency_name,created_by) values ($1,$2)", ([req.body.name,req.userdata.id])
-        ,async  function (err,result,) {
+        ,async  function (err,result) {
             await pool.query("insert into employee_type (employee_id,agency_id,type_id) values ($1,(select id from agency where agency_name =($2)),1)", ([req.userdata.id,req.body.name])
         , function(err,result) {
             done();    // closing the connection;
@@ -33,7 +33,7 @@ const pool = new Pool({
             if(result.rowCount === 0){
            
                 res.status(200).json({
-                    message: 'Authentication failed',
+                    message: 'Authentication failed, error occured while creating the agency',
         
                 });
                }
@@ -66,7 +66,7 @@ router.get('/getAllAgenciesWithEmployees', function (req, res, next) {    // get
     });
 });
 
-router.get('/getAllAgencies',checkAuth,function (req, res, next) {    // getting all ageencies 
+router.get('/getAllAgencies',function (req, res, next) {    // getting all ageencies 
     
     pool.connect(function(err,client,done) {
        if(err){
@@ -103,7 +103,7 @@ router.get('/getAllEmployees', function (req, res, next) {    // getting all Emp
        });
     });
 });
-router.delete('/deleteAgency',checkAuth, function (req, res, next) {    // deleting agency 
+router.delete('/deleteAgency/:id',checkAuth, function (req, res, next) {    // deleting agency 
 
     pool.connect(function(err,client,done) {
        if(err){
@@ -111,17 +111,18 @@ router.delete('/deleteAgency',checkAuth, function (req, res, next) {    // delet
            res.status(400).send(err);
        } 
       
-       pool.query("delete from agency where id = ($1) and created_by = ($2)" ,[req.body.id,req.userdata.id]
+       pool.query("delete from agency where id = ($1) and created_by = ($2)" ,[req.params.id,req.userdata.id]
        , function(err,result) {
            done();    // closing the connection;
            if(err){
                console.log(err);
                res.status(400).send(err);
            }
-           if(result.rowCount === 1){
+           console.log(result);
+           if(result.rowCount === 0){
            
             res.status(200).json({
-                message: 'Authentication failed',
+                message: 'Authentication failed, not authorized delete this agency',
     
             });
            }
@@ -152,7 +153,7 @@ router.put('/updateAgency/:id',checkAuth, function (req, res, next) {    // upda
            if(result.rowCount === 0){
            
         res.status(200).json({
-            message: 'Authentication failed',
+            message: 'Authentication failed, error occured while trying to edit this agency',
 
         });
        }
@@ -182,7 +183,7 @@ router.post('/assignAgencyToEmployee',checkAuth, function (req, res, next) {    
            if(result.rowCount === 0){
            
             res.status(200).json({
-                message: 'Authentication failed',
+                message: 'Authentication failed, error occured while adding employees to this agency',
     
             });
         }else{
