@@ -20,18 +20,21 @@ const pool = new Pool({
             res.status(400).send(err);
         } 
        
-         pool.query("SELECT 1 FROM agency.user WHERE email = ($1) and password = ($2)", [req.body.email,req.body.password]
+         pool.query("SELECT * FROM employee WHERE email = ($1) and password = ($2)", [req.body.email,req.body.password]
          , function(err,result) {
              done();    // closing the connection;
              if(err){
                  console.log(err);
                  res.status(400).send(err);
              }else{
+                 console.log(result.rows[0].id);
              if(result.rowCount === 1){
-                 const token = jwt.sign({
+                 const payload = {
+                     id: result.rows[0].id,
                      email: req.body.email
-                 },tokenKey, { expiresIn: '1h' })
-             console.log(result.rowCount) 
+                 }
+                 const token = jwt.sign(payload,tokenKey, { expiresIn: '1h' })
+             console.log(result.rowCount + ' user.js') 
              res.status(200).json({
                  message: 'Authentication Successful',
                  token: token
